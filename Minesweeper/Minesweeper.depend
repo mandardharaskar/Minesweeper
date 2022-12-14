@@ -1,4 +1,6 @@
 # depslib dependency file v1.0
-1670440951 source:d:\github\minesweeper\minesweeper\minesweeper\main.c
+1670861147 source:d:\github\minesweeper\minesweeper\minesweeper\main.c
 	<stdio.h>
+	<stddef.h>
+	<stdbool.h>
 

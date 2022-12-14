@@ -1,4 +1,6 @@
 #include<stdio.h>
+#include <stddef.h>
+#include <stdbool.h>
 const int max_x_y[64] = {0};
 
 void vInit(void);
@@ -9,7 +11,35 @@ void vSelectGameBlock(void);
 static int sbOption = 0;
 static int sbCase = 0;
 
-int m1,m2,m3,m4,m5 = 0;
+int m[5]= {0};
+int R[5]= {0};
+int C[5]= {0};
+bool FlagR = false;
+bool FlagC = false;
+
+int ScanCount = 4;
+
+enum{
+    R0 = 0,
+    R1,
+    R2,
+    R3,
+    R4,
+    R5,
+    R6,
+    R7,
+}T_Row;
+
+enum{
+    C0 = 0,
+    C1,
+    C2,
+    C3,
+    C4,
+    C5,
+    C6,
+    C7,
+}T_Column;
 
 enum{
     MINE = 1,
@@ -68,6 +98,16 @@ int sbSetOptionsNo(int sbOpt)
     return sbCase;
 }
 
+int msb = 0;
+int lsb = 0;
+
+bool InputErrFlag = false;
+int temp =0;
+int RSCount =0;
+
+int a,b,c=0;
+int x,y=0;
+
 void vAddMine(void)
 {
     printf("I am in AddMine : \n \n");
@@ -75,64 +115,78 @@ void vAddMine(void)
     vDrawGameBlock();
 
     printf("\n Choose 5 RC combination to Add Mine : \n");
-    scanf("%d",&m1);
-    scanf("%d",&m2);
-    scanf("%d",&m3);
-    scanf("%d",&m4);
-    scanf("%d",&m5);
-
-    printf("Mine are added at : %d\n %d\n %d\n %d\n %d\n ",m1,m2,m3,m4,m5);
-
-    for(int i=0;i<9;i++)//Row
+    for(int i = 0;i<=ScanCount;i++)
     {
-        if(i<1)
-            printf("    ");
-        else
-            printf(" R%d",i-1);
-
-        for(int j=0;j<8;j++)//Column
+        scanf("%d",&temp);
+        if(temp == m[0] || temp == m[1] || temp == m[2] || temp == m[3])
         {
-            if(i<1)
-                printf("C%d ",j);
-            else
-            {
-                if(i==m1%10 && j==m1/10 )
-                    printf(" M ");
-                else if(i==m2%10 && j==m2/10 )
-                    printf(" M ");
-                else if(i==m3%10 && j==m3/10 )
-                    printf(" M ");
-                else if(i==m4%10 && j==m4/10 )
-                    printf(" M ");
-                else if(i==m5%10 && j==m5/10 )
-                    printf(" M ");
-                else
-                    printf(" * ");
-            }
-
+            InputErrFlag = true;
+            printf("Entered Row column is Repeated. Select different RC \n");
+            ScanCount = ScanCount+1;
         }
-        printf("\n");
+         else if(temp>77)
+        {
+            InputErrFlag = true;
+            printf("Please choose the Correct Row & Column \n");
+            ScanCount = ScanCount+1;
+        }
+        else{
+            InputErrFlag = false;
+        }
+
+        if(InputErrFlag == false)
+        {
+            m[RSCount] = temp;
+            RSCount = RSCount + 1;
+            if(RSCount >4)
+                RSCount = RSCount-1;
+        }
+
+    }
+/***********Code for debugging**********/
+    for(int i = 0;i<=4;i++)
+    {
+        R[i] = m[i]/10;//Row//msb
+        C[i] = m[i]%10;//Column//lsb
+        printf("\n m : %d ",m[i]);
+        printf(" msb is %d & lsb is %d \n",R[i],C[i]);
+    }
+
+    printf("\n");
+/***************************************/
+    for(int b=0;b<8;b++)
+        printf("C%d ",b);
+
+    printf("\n");
+
+    for(x=0;x<8;x++)
+    {
+        for(y=0;y<8;y++)
+        {
+            if(x==R[x] && y==C[y])
+                printf(" M ");
+            else
+                printf(" * ");
+        }
+        printf("R%d \n",x);
     }
 
 }
 
 void vDrawGameBlock(void)
 {
-    for(int i=0;i<9;i++)//Row
-    {
-        if(i<1)
-            printf("    ");
-        else
-            printf(" R%d",i-1);
+    for(int b=0;b<8;b++)
+        printf("C%d ",b);
 
+    printf("\n");
+
+    for(int i=0;i<8;i++)//Row
+    {
         for(int j=0;j<8;j++)//Column
         {
-            if(i<1)
-                printf("C%d ",j);
-            else
-                printf(" * ");
+            printf(" * ");
         }
-        printf("\n");
+        printf(" R%d \n",i);
     }
 }
 
